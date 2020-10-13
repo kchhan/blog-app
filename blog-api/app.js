@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const compression = require('compression');
+const helmet = require('helmet');
+
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -23,6 +26,7 @@ const mongoose = require('mongoose');
 const mongoDB = process.env.MONGODB_URI;
 // connect to MongoDB
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error'));
 
@@ -36,7 +40,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// add helmet and compression???
+app.use(helmet());
+app.use(compression()); // compress all routes
 
 // set up passportjs
 passport.use(
@@ -72,7 +77,6 @@ app.use(session({ secret: 'blog', resave: false, saveUninitialized: true }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.urlencoded({ extended: false }));
 
 // for the currentUser variable
 app.use(function (req, res, next) {
