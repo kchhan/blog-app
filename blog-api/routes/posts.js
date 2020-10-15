@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-/* GET home page. */
+// GET all posts
 router.get('/', function (req, res, next) {
-  res.redirect('/posts');
+  console.log(req.session)
+  res.send('<h1>Hello World (session)</h1>');
 });
 
 module.exports = router;

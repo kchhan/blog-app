@@ -11,13 +11,15 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+const jtw = require('jsonwebtoken');
 
 const User = require('./models/User');
 
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts');
+const auth = require('./routes/auth');
 
 const app = express();
 
@@ -32,12 +34,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // add middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
@@ -73,7 +76,26 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-app.use(session({ secret: 'blog', resave: false, saveUninitialized: true }));
+const protectRoute = (req, res, next) => {
+  // if user exists the token was sent with the request
+  if (req.user) {
+    // if user exists then go to the next middleware
+    next();
+  } else {
+    // token was not sent with the request send error to user
+    res.status(500).json({ error: 'login is required' });
+  }
+};
+
+// todo: put secret in env variable
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // equals 1 day
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -86,6 +108,8 @@ app.use(function (req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', auth);
+app.use('/posts', postsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
