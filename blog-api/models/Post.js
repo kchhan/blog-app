@@ -2,10 +2,12 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+const date = new Date().toLocaleDateString();
+
 const PostSchema = new Schema({
   title: { type: String, required: true },
   body: { type: String, required: true },
-  added: { type: Date, default: Date.now().toLocaleTimeString() },
+  added: { type: Date, default: date, required: true },
   comments: [{ type: Schema.ObjectId, ref: 'Comment' }],
 });
 
