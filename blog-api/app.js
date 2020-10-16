@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors');
 
 const compression = require('compression');
 const helmet = require('helmet');
@@ -11,15 +12,14 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const jtw = require('jsonwebtoken');
 
 const User = require('./models/User');
 
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
-const postsRouter = require('./routes/posts');
-const auth = require('./routes/auth');
+const authRouter = require('./routes/auth');
+const postRouter = require('./routes/posts');
 
 const app = express();
 
@@ -37,10 +37,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // add middleware
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
@@ -76,26 +76,7 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-const protectRoute = (req, res, next) => {
-  // if user exists the token was sent with the request
-  if (req.user) {
-    // if user exists then go to the next middleware
-    next();
-  } else {
-    // token was not sent with the request send error to user
-    res.status(500).json({ error: 'login is required' });
-  }
-};
-
-// todo: put secret in env variable
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // equals 1 day
-  })
-);
+app.use(session({ secret: 'blog', resave: false, saveUninitialized: true }));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -107,9 +88,8 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/auth', auth);
-app.use('/posts', postsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
