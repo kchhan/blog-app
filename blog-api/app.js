@@ -7,7 +7,6 @@ const compression = require('compression');
 const helmet = require('helmet');
 const session = require('express-session');
 const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
 const cors = require('cors');
 require('dotenv').config();
 
@@ -42,9 +41,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
-  session({ secret: 'blogsecret', resave: false, saveUninitialized: true })
+  session({ secret: process.env.SECRET, resave: false, saveUninitialized: true })
 );
-app.use(cookieParser('blogsecret'));
+app.use(cookieParser(process.env.SECRET));
 app.use(helmet());
 app.use(compression()); // compress all routes
 
