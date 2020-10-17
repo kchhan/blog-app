@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Login = () => {
   const [username, setUsername] = useInput('');
@@ -17,6 +18,16 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const data = {
+      username: username,
+      password: password,
+    };
+    axios
+      .post('http://localhost:5000/api/auth/login', data)
+      .then((response) => console.log(response))
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -35,7 +46,7 @@ const Login = () => {
         <div>
           <label>Password</label>
           <input
-            type='text'
+            type='password'
             value={password}
             onChange={setPassword}
             required
