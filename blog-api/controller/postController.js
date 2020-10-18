@@ -12,13 +12,23 @@ exports.posts_get = (req, res, next) => {
       if (err) {
         return next(err);
       } else {
-        res.send(posts_data);
+        return res.json(posts_data);
       }
     });
 };
 
 // GET read blog body and comment form on bottom
-exports.post_detail_get = (req, res, next) => {};
+exports.post_detail_get = (req, res, next) => {
+  Post.findById(req.params.id)
+    .populate('comment')
+    .exec((err, post_data) => {
+      if (err) {
+        return next(err);
+      } else {
+        return res.send(post_data);
+      }
+    });
+};
 
 // POST comment on blog
 exports.post_detail_post = (req, res, next) => {};

@@ -8,7 +8,7 @@ const UserSchema = new Schema({
   last_name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  comments: [{ type: Schema.ObjectId, ref: 'Comment' }],
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 });
 
 UserSchema.methods.generateHash = function (password) {
