@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
@@ -56,6 +57,9 @@ const Login = () => {
           <button type='submit'>Submit</button>
         </div>
       </form>
+      <div>
+        <Link to={'/'}>Go Back</Link>
+      </div>
     </div>
   );
 };
