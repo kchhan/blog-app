@@ -1,18 +1,18 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const compression = require('compression');
 const helmet = require('helmet');
-const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
+const jwt = require('jsonwebtoken')
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/posts');
+const verifyTokenRouter = require('./routes/verifyToken');
 
 const app = express();
 
@@ -40,10 +40,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(
-  session({ secret: process.env.SECRET, resave: false, saveUninitialized: true })
-);
-app.use(cookieParser(process.env.SECRET));
 app.use(helmet());
 app.use(compression()); // compress all routes
 
@@ -62,6 +58,26 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/verifyToken', verifyTokenRouter);
+
+app.use(function (req, res, next) {
+  // check header or url parameters or post parameters for token
+  var token = req.headers['authorization'];
+  if (!token) return next(); //if no token, continue
+ 
+  token = token.replace('Bearer ', '');
+  jwt.verify(token, process.env.JWT_SECRET, function (err, user) {
+    if (err) {
+      return res.status(401).json({
+        error: true,
+        message: "Invalid user."
+      });
+    } else {
+      req.user = user; //set the user to req so other routes can use it
+      next();
+    }
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

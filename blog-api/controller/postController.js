@@ -2,8 +2,6 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 
-const { body, check, validationResult } = require('express-validator');
-
 // GET all posts
 exports.posts_get = (req, res, next) => {
   Post.find({})
@@ -12,7 +10,7 @@ exports.posts_get = (req, res, next) => {
       if (err) {
         return next(err);
       } else {
-        return res.json(posts_data);
+        return res.send(posts_data);
       }
     });
 };

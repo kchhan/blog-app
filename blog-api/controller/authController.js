@@ -1,9 +1,9 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const passport = require('passport');
 require('dotenv').config();
 
-const passport = require('passport');
+const { generateToken, getCleanUser } = require('../util');
 
 // GET login page
 exports.login_get = (req, res, next) => {
@@ -17,10 +17,9 @@ exports.login_post = (req, res, next) => {
     if (!user) res.send('No User Exists');
     req.logIn(user, (err) => {
       if (err) return next(err);
-      const token = jwt.sign({ user }, process.env.SECRET, {
-        expiresIn: '24h',
-      });
-      res.json({ user, token });
+      const token = generateToken(user);
+      const userObj = getCleanUser(user);
+      res.json({ user: userObj, token });
     });
   })(req, res, next);
 };
