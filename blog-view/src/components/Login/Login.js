@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { setUserLocal } from '../../Utils/Common';
 
 const Login = () => {
   const [username, setUsername] = useInput('');
   const [password, setPassword] = useInput('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // sets values for form data
   function useInput(initialValue) {
@@ -17,24 +20,33 @@ const Login = () => {
     return [value, handleChange];
   }
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     const data = {
       username: username,
       password: password,
     };
+    setError(null);
+    setLoading(true);
     axios
       .post('http://localhost:5000/api/auth/login', data)
-      .then((response) => console.log(response))
+      .then((response) => {
+        setLoading(false);
+        setUserLocal(response.data.token, response.data.user);
+        console.log('Login with', response.data.user.username);
+      })
       .catch((error) => {
-        console.log(error);
+        setLoading(false);
+        if (error.response.status === 401)
+          setError(error.response.data.message);
+        else setError('Something went wrong. Please try again later.');
       });
   };
 
   return (
     <div>
       <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           <label htmlFor='username'>Username</label>
           <input
@@ -53,8 +65,14 @@ const Login = () => {
             required
           ></input>
         </div>
+        {error}
         <div>
-          <button type='submit'>Submit</button>
+          <input
+            type='button'
+            value={loading ? 'Loading...' : 'Login'}
+            onClick={handleLogin}
+            disabled={loading}
+          />
         </div>
       </form>
       <div>
