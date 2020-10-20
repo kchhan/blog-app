@@ -7,7 +7,7 @@ const date = new Date().toLocaleDateString();
 const CommentSchema = new Schema({
   message: { type: String, required: true },
   added: { type: Date, default: date },
-  post: { type: Schema.ObjectId, required: true },
+  post: { type: Schema.Types.ObjectId, required: true },
 });
 
 module.exports = mongoose.model('Comment', CommentSchema);
