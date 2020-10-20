@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { setUserLocal } from '../../Utils/Common';
 
-const Login = () => {
+const Login = (props) => {
   const [username, setUsername] = useInput('');
   const [password, setPassword] = useInput('');
   const [loading, setLoading] = useState(false);
@@ -32,8 +32,10 @@ const Login = () => {
       .post('http://localhost:5000/api/auth/login', data)
       .then((response) => {
         setLoading(false);
+        // sets token in local storage
         setUserLocal(response.data.token, response.data.user);
-        console.log('Login with', response.data.user.username);
+        // redirects to post list
+        props.history.push('/');
       })
       .catch((error) => {
         setLoading(false);
@@ -43,9 +45,12 @@ const Login = () => {
       });
   };
 
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div>
       <h1>Log In</h1>
+
       <form>
         <div>
           <label htmlFor='username'>Username</label>
@@ -56,6 +61,7 @@ const Login = () => {
             required
           ></input>
         </div>
+
         <div>
           <label>Password</label>
           <input
@@ -65,7 +71,12 @@ const Login = () => {
             required
           ></input>
         </div>
-        {error}
+
+        <div>
+          {/* if there are errors they will show up above log in button */}
+          {error}
+        </div>
+
         <div>
           <input
             type='button'
@@ -75,6 +86,10 @@ const Login = () => {
           />
         </div>
       </form>
+
+      <div>
+        <Link to={'/signup'}>First Time?</Link>
+      </div>
       <div>
         <Link to={'/'}>Go Back</Link>
       </div>

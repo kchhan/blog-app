@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { removeUserLocal } from '../../Utils/Common';
 
-const Header = () => {
+const Header = (props) => {
+  const { isLoggedIn } = props;
+
   const handleLogout = () => {
     removeUserLocal();
   };
@@ -14,9 +16,14 @@ const Header = () => {
       </div>
       <div>
         <Link to={'/'}>Home</Link>
-        <Link to={'/login'}>Log In</Link>
-        <Link to={'/signup'}>Sign Up</Link>
-        <input type='button' onClick={handleLogout} value='Logout' />
+
+        {isLoggedIn ? null : <Link to={'/login'}>Log In</Link>}
+
+        {isLoggedIn ? (
+          <input type='button' onClick={handleLogout} value='Logout' />
+        ) : null}
+
+        {isLoggedIn ? null : <Link to={'/signup'}>Sign Up</Link>}
       </div>
     </nav>
   );

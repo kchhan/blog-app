@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import Header from '../Header/Header';
 
-const PostsList = () => {
+const PostsList = (props) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const PostsList = () => {
 
   return (
     <main>
-      <Header />
+      <Header isLoggedIn={props.isLoggedIn} />
       <ul>
         {data.map((post) => (
           <li key={post._id}>

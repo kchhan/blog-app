@@ -1,30 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 
 import Header from '../Header/Header';
+import CommentForm from '../CommentForm/CommentForm';
 
-const PostDetail = ({ match }) => {
-  const [data, setData] = useState({});
+const PostDetail = (props, { match }) => {
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
+  const { isLoggedIn } = props;
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/posts/${match.params.id}`)
+      .get(`http://localhost:5000/api/posts/${props.match.params.id}`)
       .then((res) => {
-        setData(res.data);
+        setPost(res.data.post);
+        setComments(res.data.comments);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [match]);
+  }, [props, match]);
 
   return (
     <div>
-      <Header />
+      <Header isLoggedIn={props.isLoggedIn} />
       <section>
-        <h1>{data.title}</h1>
-        <p>{data.added}</p>
-        <p>{data.body}</p>
-        {/* will add comments later */}
+        <h1>{post.title}</h1>
+        <p>{post.added}</p>
+        <p>{post.body}</p>
+        <ul>
+          {comments
+            ? comments.map((comment) => {
+                return (
+                  <div>
+                    <li key={comment._id}>{comment.message}</li>
+                    {/* <p>TODO: message time added</p> */}
+                  </div>
+                );
+              })
+            : null}
+        </ul>
+        {isLoggedIn ? <CommentForm match={props.match} /> : null}
       </section>
     </div>
   );

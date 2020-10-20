@@ -26,14 +26,34 @@ const App = () => {
   }
 
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path='/' component={PostsList} />
-        <Route path='/login' component={Login} />
-        <Route path='/signup' component={Signup} />
-        <Route path='/posts/:id' component={PostDetail} />
-      </Switch>
-    </BrowserRouter>
+    <main>
+      <BrowserRouter>
+        <Switch>
+          <Route
+            exact
+            path='/'
+            render={(props) => (
+              <PostsList {...props} user={user} isLoggedIn={isLoggedIn} />
+            )}
+          />
+
+          <Route
+            path='/posts/:id'
+            render={(props) => (
+              <PostDetail {...props} user={user} isLoggedIn={isLoggedIn} />
+            )}
+          />
+
+          <Route exact path='/login' render={(props) => <Login {...props} />} />
+
+          <Route
+            exact
+            path='/signup'
+            render={(props) => <Signup {...props} />}
+          />
+        </Switch>
+      </BrowserRouter>
+    </main>
   );
 };
 

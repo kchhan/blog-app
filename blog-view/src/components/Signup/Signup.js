@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const Signup = () => {
+const Signup = (props) => {
   const [firstName, setFirstName] = useInput('');
   const [lastName, setLastName] = useInput('');
   const [username, setUsername] = useInput('');
   const [password, setPassword] = useInput('');
   const [confirmPassword, setConfirmPassword] = useInput('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // sets values for form data
   function useInput(initialValue) {
@@ -29,18 +31,27 @@ const Signup = () => {
       password: password,
       confirmPassword: confirmPassword,
     };
+    setError(null);
+    setLoading(true);
     axios
       .post('http://localhost:5000/api/auth/signup', data)
-      .then((response) => console.log(response))
+      .then(() => {
+        setLoading(false);
+      })
       .catch((error) => {
-        console.log(error);
+        setLoading(false);
+        setError(error);
       });
+    props.history.push('/login');
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div>
       <h1>Sign up</h1>
-      <form onSubmit={handleSubmit}>
+
+      <form>
         <div>
           <label htmlFor='firstname'>First Name</label>
           <input
@@ -50,6 +61,7 @@ const Signup = () => {
             required
           ></input>
         </div>
+
         <div>
           <label htmlFor='lastname'>Last Name</label>
           <input
@@ -59,6 +71,7 @@ const Signup = () => {
             required
           ></input>
         </div>
+
         <div>
           <label htmlFor='username'>Username</label>
           <input
@@ -68,6 +81,7 @@ const Signup = () => {
             required
           ></input>
         </div>
+
         <div>
           <label>Password</label>
           <input
@@ -77,6 +91,7 @@ const Signup = () => {
             required
           ></input>
         </div>
+
         <div>
           <label htmlFor='confirmPassword'>Confirm Password</label>
           <input
@@ -86,10 +101,20 @@ const Signup = () => {
             required
           ></input>
         </div>
+
         <div>
-          <button type='submit'>Submit</button>
+          {/* if there are errors they will show above sign up button */}
+          {error}
+        </div>
+
+        <div>
+          <input type='button' value='Sign Up' onClick={handleSubmit} />
         </div>
       </form>
+
+      <div>
+        <Link to={'/login'}>Already have an account?</Link>
+      </div>
       <div>
         <Link to={'/'}>Go Back</Link>
       </div>
