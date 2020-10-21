@@ -1,3 +1,4 @@
+const User = require('../models/User');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 
@@ -7,14 +8,13 @@ require('dotenv').config();
 
 // GET all posts
 exports.posts_get = (req, res, next) => {
-  Post.find({})
-    .exec((err, posts_data) => {
-      if (err) {
-        return next(err);
-      } else {
-        return res.send(posts_data);
-      }
-    });
+  Post.find({}).exec((err, posts_data) => {
+    if (err) {
+      return next(err);
+    } else {
+      return res.send(posts_data);
+    }
+  });
 };
 
 // GET read blog body and comment form on bottom
@@ -25,7 +25,7 @@ exports.post_detail_get = (req, res, next) => {
         Post.findById(req.params.id).exec(callback);
       },
       comments: (callback) => {
-        Comment.find({ post: req.params.id }).exec(callback);
+        Comment.find({ post: req.params.id }).populate('user').exec(callback);
       },
     },
     (err, results) => {
@@ -53,24 +53,35 @@ exports.post_detail_post = (req, res, next) => {
     } else {
       // token matches. create comment
       const comment = new Comment({
+        user: authData.userId,
         message: req.body.message,
-        added: Date.now(),
+        added: new Date(),
         post: req.params.id,
       });
 
-      // push comment id to post array
+      // push comment id to post comment array
       Post.findByIdAndUpdate(
         req.params.id,
         {
           $push: {
-            comments: {
-              comment: comment,
-            },
+            comments: comment,
           },
         },
         (err, doc) => {
           if (err) console.log(err);
-          else console.log(doc);
+        }
+      );
+
+      // push comment id to user comment array
+      User.findByIdAndUpdate(
+        authData.userId,
+        {
+          $push: {
+            comments: comment,
+          },
+        },
+        (err, doc) => {
+          if (err) console.log(err);
         }
       );
 
