@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { getUser } from './Utils/Common';
+import { getUser, removeUserLocal } from './Utils/Common';
 
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
+import Header from './components/Header/Header';
 import PostsList from './components/PostList/PostsList';
 import PostDetail from './components/PostDetail/PostDetail';
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
 
@@ -18,16 +19,26 @@ const App = () => {
       setIsLoggedIn(true);
       setUser(user);
     }
-    return setIsLoading(false);
+    return setLoading(false);
   }, []);
 
-  if (isLoading) {
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    removeUserLocal();
+    setIsLoggedIn(false);
+  };
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <main>
       <BrowserRouter>
+        <Header handleLogout={handleLogout} isLoggedIn={isLoggedIn} />
         <Switch>
           <Route
             exact
@@ -44,7 +55,11 @@ const App = () => {
             )}
           />
 
-          <Route exact path='/login' render={(props) => <Login {...props} />} />
+          <Route
+            exact
+            path='/login'
+            render={(props) => <Login {...props} updateLogin={handleLogin} />}
+          />
 
           <Route
             exact

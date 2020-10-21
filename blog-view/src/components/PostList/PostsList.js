@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Header from '../Header/Header';
-
-const PostsList = (props) => {
+const PostsList = () => {
   const [data, setData] = useState([]);
 
-  useEffect(() => {
+  const fetchData = () => {
     axios
       .get('http://localhost:5000/api/posts')
       .then((res) => {
@@ -16,11 +14,14 @@ const PostsList = (props) => {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  useEffect(() => {
+    fetchData()
   }, []);
 
   return (
     <main>
-      <Header isLoggedIn={props.isLoggedIn} />
       <ul>
         {data.map((post) => (
           <li key={post._id}>

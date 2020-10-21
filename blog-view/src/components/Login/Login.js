@@ -36,6 +36,8 @@ const Login = (props) => {
         setUserLocal(response.data.token, response.data.user);
         // redirects to post list
         props.history.push('/');
+        // set logged in in parent component
+        return props.updateLogin();
       })
       .catch((error) => {
         setLoading(false);
@@ -54,12 +56,7 @@ const Login = (props) => {
       <form>
         <div>
           <label htmlFor='username'>Username</label>
-          <input
-            type='text'
-            value={username}
-            onChange={setUsername}
-            required
-          ></input>
+          <input type='text' value={username} onChange={setUsername} required />
         </div>
 
         <div>
@@ -69,7 +66,7 @@ const Login = (props) => {
             value={password}
             onChange={setPassword}
             required
-          ></input>
+          />
         </div>
 
         <div>

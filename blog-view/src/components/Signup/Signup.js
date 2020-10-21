@@ -37,12 +37,12 @@ const Signup = (props) => {
       .post('http://localhost:5000/api/auth/signup', data)
       .then(() => {
         setLoading(false);
+        props.history.push('/login');
       })
       .catch((error) => {
         setLoading(false);
         setError(error);
       });
-    props.history.push('/login');
   };
 
   if (loading) return <div>Loading...</div>;
@@ -59,27 +59,17 @@ const Signup = (props) => {
             value={firstName}
             onChange={setFirstName}
             required
-          ></input>
+          />
         </div>
 
         <div>
           <label htmlFor='lastname'>Last Name</label>
-          <input
-            type='text'
-            value={lastName}
-            onChange={setLastName}
-            required
-          ></input>
+          <input type='text' value={lastName} onChange={setLastName} required />
         </div>
 
         <div>
           <label htmlFor='username'>Username</label>
-          <input
-            type='text'
-            value={username}
-            onChange={setUsername}
-            required
-          ></input>
+          <input type='text' value={username} onChange={setUsername} required />
         </div>
 
         <div>
@@ -89,7 +79,7 @@ const Signup = (props) => {
             value={password}
             onChange={setPassword}
             required
-          ></input>
+          />
         </div>
 
         <div>
@@ -99,7 +89,7 @@ const Signup = (props) => {
             value={confirmPassword}
             onChange={setConfirmPassword}
             required
-          ></input>
+          />
         </div>
 
         <div>
