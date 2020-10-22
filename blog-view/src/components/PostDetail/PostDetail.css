@@ -1,0 +1,40 @@
+.post-title {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.post-added {
+  margin: 5px;
+  text-align: center;
+}
+
+.post-title-img {
+  margin: 0 auto;
+  max-width: 600px;
+  max-height: 400px;
+}
+
+.post-body {
+  margin: 20px auto;
+  padding: 10px;
+  line-height: 1.4;
+}
+
+.post-comment-card {
+  margin: 5px auto;
+  padding: 15px;
+  max-width: 400px;
+  border: 1px solid var(--black);
+  border-radius: 15px;
+  background-color: var(--comment-background);
+}
+
+.post-comment-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-comment {
+  padding-top: 10px;
+}

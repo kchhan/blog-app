@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { setUserLocal } from '../../Utils/Common';
 
+import './Login.css';
+
 const Login = (props) => {
   const [username, setUsername] = useInput('');
   const [password, setPassword] = useInput('');
@@ -50,47 +52,61 @@ const Login = (props) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h1>Log In</h1>
+    <section className='login'>
+      <h1 className='login-title'>Log In</h1>
 
-      <form>
-        <div>
-          <label htmlFor='username'>Username</label>
-          <input type='text' value={username} onChange={setUsername} required />
-        </div>
-
-        <div>
-          <label>Password</label>
+      <form className='login-form'>
+        <div className='login-form-group'>
+          <label htmlFor='username' className='login-label'>
+            Username:
+          </label>
           <input
-            type='password'
-            value={password}
-            onChange={setPassword}
+            type='text'
+            value={username}
+            onChange={setUsername}
+            className='login-input'
             required
           />
         </div>
 
-        <div>
+        <div className='login-form-group'>
+          <label className='login-label'>Password:</label>
+          <input
+            type='password'
+            value={password}
+            onChange={setPassword}
+            className='login-input'
+            required
+          />
+        </div>
+
+        <div className='login-errors'>
           {/* if there are errors they will show up above log in button */}
           {error}
         </div>
 
-        <div>
+        <div className='login-form-group'>
           <input
             type='button'
             value={loading ? 'Loading...' : 'Login'}
             onClick={handleLogin}
+            className='login-input login-submit'
             disabled={loading}
           />
         </div>
       </form>
 
-      <div>
-        <Link to={'/signup'}>First Time?</Link>
+      <div className='login-redirect'>
+        <Link to={'/signup'} className='login-redirect-signup'>
+          First Time?
+        </Link>
       </div>
-      <div>
-        <Link to={'/'}>Go Back</Link>
+      <div className='login-redirect'>
+        <Link to={'/'} className='login-redirect-back'>
+          Go Back
+        </Link>
       </div>
-    </div>
+    </section>
   );
 };
 

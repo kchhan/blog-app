@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import './PostList.css';
+
 const PostsList = () => {
   const [data, setData] = useState([]);
 
@@ -14,22 +16,24 @@ const PostsList = () => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, []);
 
   return (
-    <main>
+    <section className='post-list'>
       <ul>
         {data.map((post) => (
-          <li key={post._id}>
-            <Link to={`/posts/${post._id}`}>{post.title}</Link>
+          <li key={post._id} className='post-list-card'>
+            <Link to={`/posts/${post._id}`} className='post-list-link'>
+              {post.title}
+            </Link>
           </li>
         ))}
       </ul>
-    </main>
+    </section>
   );
 };
 

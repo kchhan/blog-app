@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import './Signup.css';
+
 const Signup = (props) => {
   const [firstName, setFirstName] = useInput('');
   const [lastName, setLastName] = useInput('');
@@ -48,67 +50,101 @@ const Signup = (props) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h1>Sign up</h1>
+    <section className='signup'>
+      <h1 className='signup-title'>Sign up</h1>
 
-      <form>
-        <div>
-          <label htmlFor='firstname'>First Name</label>
+      <form className='signup-form'>
+        <div className='signup-form-group'>
+          <label htmlFor='firstname' className='signup-label'>
+            First Name
+          </label>
           <input
             type='text'
             value={firstName}
             onChange={setFirstName}
+            className='signup-input'
             required
           />
         </div>
 
-        <div>
-          <label htmlFor='lastname'>Last Name</label>
-          <input type='text' value={lastName} onChange={setLastName} required />
+        <div className='signup-form-group'>
+          <label htmlFor='lastname' className='signup-label'>
+            Last Name
+          </label>
+          <input
+            type='text'
+            value={lastName}
+            onChange={setLastName}
+            className='signup-input'
+            required
+          />
         </div>
 
-        <div>
-          <label htmlFor='username'>Username</label>
-          <input type='text' value={username} onChange={setUsername} required />
+        <div className='signup-form-group'>
+          <label htmlFor='username' className='signup-label'>
+            Username
+          </label>
+          <input
+            type='text'
+            value={username}
+            onChange={setUsername}
+            className='signup-input'
+            required
+          />
         </div>
 
-        <div>
-          <label>Password</label>
+        <div className='signup-form-group'>
+          <label htmlFor='password' className='signup-label'>
+            Password
+          </label>
           <input
             type='password'
             value={password}
             onChange={setPassword}
+            className='signup-input'
             required
           />
         </div>
 
-        <div>
-          <label htmlFor='confirmPassword'>Confirm Password</label>
+        <div className='signup-form-group'>
+          <label htmlFor='confirmPassword' className='signup-label'>
+            Confirm Password
+          </label>
           <input
             type='password'
             value={confirmPassword}
             onChange={setConfirmPassword}
+            className='signup-input'
             required
           />
         </div>
 
-        <div>
+        <div className='signup-errors'>
           {/* if there are errors they will show above sign up button */}
           {error}
         </div>
 
-        <div>
-          <input type='button' value='Sign Up' onClick={handleSubmit} />
+        <div className="signup-form-group">
+          <input
+            type='button'
+            value='Sign Up'
+            onClick={handleSubmit}
+            className='signup-input signup-submit'
+          />
         </div>
       </form>
 
-      <div>
-        <Link to={'/login'}>Already have an account?</Link>
+      <div className='signup-redirect'>
+        <Link to={'/login'} className='signup-redirect-login'>
+          Already have an account?
+        </Link>
       </div>
-      <div>
-        <Link to={'/'}>Go Back</Link>
+      <div className='signup-redirect'>
+        <Link to={'/'} className='signup-redirect-back'>
+          Go Back
+        </Link>
       </div>
-    </div>
+    </section>
   );
 };
 

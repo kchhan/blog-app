@@ -1,0 +1,28 @@
+.comment-form {
+  margin: 10px auto;
+  padding: 10px;
+  max-width: 500px;
+}
+
+.comment-form-group {
+  display: block;
+}
+
+.comment-label,
+.comment-input {
+  display: block;
+  margin: 5px;
+  padding: 5px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.comment-label {
+  text-align: center;
+}
+
+.comment-submit {
+  font-weight: 600;
+  color: var(--white);
+  background-color: var(--submit);
+}

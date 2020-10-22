@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import './CommentForm.css';
+
 const CommentForm = (props) => {
   const [message, setMessage] = useState('');
 
@@ -10,20 +12,28 @@ const CommentForm = (props) => {
   };
 
   return (
-    <form>
-      <div>
-        <label htmlFor='message'>Message</label>
+    <form className='comment-form'>
+      <div className='comment-form-group'>
+        <label htmlFor='message' className='comment-label'>
+          Add A Comment
+        </label>
         <input
           type='text'
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
           }}
+          className='comment-input'
         />
       </div>
 
-      <div>
-        <input type='button' value='submit' onClick={handleSubmit} />
+      <div className='form-group'>
+        <input
+          type='button'
+          value='submit'
+          onClick={handleSubmit}
+          className='comment-input comment-submit'
+        />
       </div>
     </form>
   );

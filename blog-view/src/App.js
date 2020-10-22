@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { getUser, removeUserLocal } from './Utils/Common';
 
+import './App.css';
+
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import Header from './components/Header/Header';
