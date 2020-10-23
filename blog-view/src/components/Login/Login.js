@@ -34,12 +34,18 @@ const Login = (props) => {
       .post('http://localhost:5000/api/auth/login', data)
       .then((response) => {
         setLoading(false);
-        // sets token in local storage
-        setUserLocal(response.data.token, response.data.user);
-        // redirects to post list
-        props.history.push('/');
-        // set logged in in parent component
-        return props.updateLogin();
+        console.log(response);
+        // failed authentication
+        if ((response.data = 'Wrong username or password')) {
+          return setError('Sorry. Wrong username or password');
+        } else {
+          // sets token in local storage
+          setUserLocal(response.data.token, response.data.user);
+          // redirects to post list
+          props.history.push('/');
+          // set logged in in parent component
+          return props.updateLogin();
+        }
       })
       .catch((error) => {
         setLoading(false);

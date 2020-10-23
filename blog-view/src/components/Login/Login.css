@@ -53,3 +53,7 @@
 .login-redirect-back {
   background-color: var(--go-back);
 }
+
+.login-errors {
+  text-align: center;
+}

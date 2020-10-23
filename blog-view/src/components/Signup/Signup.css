@@ -53,3 +53,7 @@
 .signup-redirect-back {
   background-color: var(--go-back);
 }
+
+.signup-errors {
+  text-align: center;
+}

@@ -11,7 +11,7 @@ const Signup = (props) => {
   const [password, setPassword] = useInput('');
   const [confirmPassword, setConfirmPassword] = useInput('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState([]);
 
   // sets values for form data
   function useInput(initialValue) {
@@ -26,24 +26,34 @@ const Signup = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const data = {
       first_name: firstName,
       last_name: lastName,
       username: username,
       password: password,
-      confirmPassword: confirmPassword,
+      confirm_password: confirmPassword,
     };
-    setError(null);
+
     setLoading(true);
+
     axios
       .post('http://localhost:5000/api/auth/signup', data)
-      .then(() => {
-        setLoading(false);
-        props.history.push('/login');
+      .then((response) => {
+        console.log(response);
+        if (response.data.success === false) {
+          // failed making user
+          setLoading(false);
+          return setErrors(response.data.errors);
+        } else {
+          // successfully made user
+          setLoading(false);
+          props.history.push('/login');
+        }
       })
       .catch((error) => {
         setLoading(false);
-        setError(error);
+        setErrors(error);
       });
   };
 
@@ -121,10 +131,14 @@ const Signup = (props) => {
 
         <div className='signup-errors'>
           {/* if there are errors they will show above sign up button */}
-          {error}
+          <ul>
+            {errors.map((error, index) => {
+              return <li key={index}>{error.msg}</li>;
+            })}
+          </ul>
         </div>
 
-        <div className="signup-form-group">
+        <div className='signup-form-group'>
           <input
             type='button'
             value='Sign Up'
