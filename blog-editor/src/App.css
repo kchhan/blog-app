@@ -1,0 +1,37 @@
+:root {
+  --white: rgb(255, 255, 255);
+  --black: rgb(0, 0, 0);
+  --home: rgb(94, 92, 230);
+  --sign-up: rgb(255, 159, 10);
+  --log-in: rgb(48, 209, 88);
+  --log-out: rgb(255, 55, 95);
+  --go-back: rgb(255, 55, 95);
+  --submit: rgb(10, 132, 255);
+  --comment-background: rgb(200, 200, 200);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+li {
+  list-style-type: none;
+}

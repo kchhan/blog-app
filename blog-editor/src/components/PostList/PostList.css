@@ -1,0 +1,17 @@
+.post-list {
+  margin: 50px auto;
+  max-width: 600px;
+}
+
+.post-list-card {
+  margin: 10px;
+}
+
+.post-list-link {
+  display: block;
+  padding: 30px;
+  background-color: var(--comment-background);
+  border: 1px solid var(--black);
+  border-radius: 15px;
+  font-size: 1.5rem;
+}
