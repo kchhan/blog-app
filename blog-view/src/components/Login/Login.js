@@ -36,7 +36,7 @@ const Login = (props) => {
         setLoading(false);
         console.log(response);
         // failed authentication
-        if ((response.data = 'Wrong username or password')) {
+        if ((response.data === 'Wrong username or password')) {
           return setError('Sorry. Wrong username or password');
         } else {
           // sets token in local storage
