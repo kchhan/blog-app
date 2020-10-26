@@ -6,12 +6,13 @@ const compression = require('compression');
 const helmet = require('helmet');
 const passport = require('passport');
 const cors = require('cors');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/posts');
+const draftRouter = require('./routes/drafts');
 const verifyTokenRouter = require('./routes/verifyToken');
 
 const app = express();
@@ -58,19 +59,20 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/drafts', draftRouter);
 app.use('/api/verifyToken', verifyTokenRouter);
 
 app.use(function (req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.headers['authorization'];
   if (!token) return next(); //if no token, continue
- 
+
   token = token.replace('Bearer ', '');
   jwt.verify(token, process.env.JWT_SECRET, function (err, user) {
     if (err) {
       return res.status(401).json({
         error: true,
-        message: "Invalid user."
+        message: 'Invalid user.',
       });
     } else {
       req.user = user; //set the user to req so other routes can use it

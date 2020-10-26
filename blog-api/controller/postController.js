@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
+const Draft = require('../models/Draft');
 
 const async = require('async');
 const jwt = require('jsonwebtoken');
@@ -101,13 +102,21 @@ exports.post_detail_post = (req, res, next) => {
 };
 
 // GET form for now blog post (editor)
-exports.post_create_get = (req, res, next) => {};
+exports.post_create_get = (req, res, next) => {
+  // React renders a post form
+};
 
 // POST new blog post (editor)
-exports.post_create_post = (req, res, next) => {};
+exports.post_create_post = (req, res, next) => {
+  // get info from draft form
+  // create post
+  // if exising draft get id and delete
+};
 
 // GET form for update blog post (editor)
-exports.post_update_get = (req, res, next) => {};
+exports.post_update_get = (req, res, next) => {
+  // get post id and send data to post from
+};
 
 // POST update of blog post (editor)
 exports.post_update_post = (req, res, next) => {};
