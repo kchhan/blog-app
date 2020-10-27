@@ -3,15 +3,55 @@
   max-width: 600px;
 }
 
+.post-list-header {
+  text-align: center;
+}
+
+.list-group {
+  margin: 20px 0;
+}
+
 .post-list-card {
   margin: 10px;
+  padding: 20px;
+  background-color: var(--comment-background);
+  border: 1px solid var(--black);
+  border-radius: 15px;
 }
 
 .post-list-link {
   display: block;
-  padding: 30px;
-  background-color: var(--comment-background);
-  border: 1px solid var(--black);
-  border-radius: 15px;
+  padding: 10px;
   font-size: 1.5rem;
+}
+
+.post-list-button-group {
+  text-align: right;
+}
+
+.post-list-button {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  border: 1px solid var(--black);
+  border-radius: 5px;
+}
+
+.post-list-new {
+  background-color: var(--log-in);
+}
+
+.post-list-edit {
+  background-color: var(--sign-up);
+}
+
+.post-list-delete {
+  background-color: var(--go-back);
+}
+
+.post-list-errors {
+  text-align: center;
 }

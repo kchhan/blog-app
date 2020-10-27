@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route, useHistory } from 'react-router-dom';
-import { getUser, removeUserLocal } from './Utils/Common';
-
-import './App.css';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { getUser, removeUserLocal, setUserLocal } from './Utils/Common';
 
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
@@ -10,15 +8,29 @@ import Header from './components/Header/Header';
 import PostsList from './components/PostList/PostsList';
 import PostDetail from './components/PostDetail/PostDetail';
 import PostForm from './components/PostForm/PostForm';
+import './App.css';
 
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  const history = useHistory();
+  function handleLogin() {
+    setIsLoggedIn(true);
+  }
 
+  function guestLogin() {
+    setIsLoggedIn(true);
+    setUserLocal('GUESTTOKEN', 'Guest');
+    setUser({ username: 'Guest' });
+  }
+
+  function handleLogout() {
+    removeUserLocal();
+    setIsLoggedIn(false);
+  }
+
+  // checks user on load
   useEffect(() => {
     const user = getUser();
     if (user) {
@@ -28,25 +40,11 @@ const App = () => {
     return setLoading(false);
   }, []);
 
+  // updates login header state
   useEffect(() => {
     const user = getUser();
     if (!user) return;
-    if (user.username === 'kchhan') {
-      return setIsAdmin(true);
-    }
-    return setIsAdmin(false);
   }, [isLoggedIn]);
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    removeUserLocal();
-    setIsLoggedIn(false);
-    setIsAdmin(false);
-    history.push('/');
-  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -56,17 +54,14 @@ const App = () => {
     <main>
       <BrowserRouter>
         <Header handleLogout={handleLogout} isLoggedIn={isLoggedIn} />
+
+        {isLoggedIn ? null : <Redirect to='/login' />}
+
         <Switch>
           <Route
             exact
             path='/'
-            render={(props) => (
-              <PostsList
-                {...props}
-                user={user}
-                isAdmin={isAdmin}
-              />
-            )}
+            render={(props) => <PostsList {...props} user={user} />}
           />
 
           <Route
@@ -75,9 +70,9 @@ const App = () => {
               <PostForm
                 {...props}
                 type={'drafts'}
+                user={user}
                 newDraft={true}
                 newPost={true}
-                isAdmin={isAdmin}
               />
             )}
           />
@@ -85,44 +80,34 @@ const App = () => {
           <Route
             path='/drafts/:id/edit'
             render={(props) => (
-              <PostForm
-                {...props}
-                user={user}
-                type='drafts'
-                newDraft={false}
-                isAdmin={isAdmin}
-              />
+              <PostForm {...props} user={user} type='drafts' newDraft={false} />
             )}
           />
 
           <Route
             path='/posts/:id/edit'
             render={(props) => (
-              <PostForm
-                {...props}
-                type='posts'
-                newPost={false}
-                isAdmin={isAdmin}
-              />
+              <PostForm {...props} user={user} type='posts' newPost={false} />
             )}
           />
 
           <Route
             path='/posts/:id'
             render={(props) => (
-              <PostDetail
-                {...props}
-                user={user}
-                type='posts'
-                isAdmin={isAdmin}
-              />
+              <PostDetail {...props} user={user} type='posts' />
             )}
           />
 
           <Route
             exact
             path='/login'
-            render={(props) => <Login {...props} updateLogin={handleLogin} />}
+            render={(props) => (
+              <Login
+                {...props}
+                updateLogin={handleLogin}
+                handleGuestLogin={guestLogin}
+              />
+            )}
           />
 
           <Route

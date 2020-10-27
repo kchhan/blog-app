@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getToken } from '../../Utils/Common';
 import axios from 'axios';
 import moment from 'moment';
 
+import Footer from '../Footer/Footer';
 import './PostDetail.css';
-
-import CommentForm from '../CommentForm/CommentForm';
-import Footer from '../Footer/Footer'
 
 const PostDetail = (props) => {
   const [post, setPost] = useState({});
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isLoggedIn } = props;
 
   const url = `http://localhost:5000/api/posts/${props.match.params.id}`;
 
@@ -28,24 +24,6 @@ const PostDetail = (props) => {
       .catch((error) => {
         console.log(error);
         setLoading(false);
-      });
-  };
-
-  const handleSubmit = (message) => {
-    const token = getToken();
-    axios
-      .post(url, {
-        message,
-        token,
-      })
-      .then((response) => {
-        // gets back response 'success' or 'failure'
-        if (response.data.status === 'success') {
-          fetchData();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 
@@ -95,7 +73,7 @@ const PostDetail = (props) => {
                     </div>
 
                     <div>
-                      <p className="post-comment">
+                      <p className='post-comment'>
                         <i className='far fa-comment'></i> {comment.message}
                       </p>
                     </div>
@@ -104,8 +82,6 @@ const PostDetail = (props) => {
               })
             : null}
         </ul>
-
-        {isLoggedIn ? <CommentForm handleSubmit={handleSubmit} /> : null}
       </div>
 
       <Footer />

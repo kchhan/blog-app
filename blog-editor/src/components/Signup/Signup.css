@@ -1,7 +1,7 @@
 .signup {
   margin: 30px auto;
   padding: 40px;
-  max-width: 400px;
+  max-width: 500px;
   background-color: var(--comment-background);
   border: 1px solid var(--black);
   border-radius: 15px;
@@ -36,8 +36,7 @@
   text-align: center;
 }
 
-.signup-redirect-login,
-.signup-redirect-back {
+.signup-redirect-login {
   display: inline-block;
   padding: 10px;
   font-weight: 600;
@@ -48,10 +47,6 @@
 
 .signup-redirect-login {
   background-color: var(--log-in);
-}
-
-.signup-redirect-back {
-  background-color: var(--go-back);
 }
 
 .signup-errors {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useHistory } from 'react-router-dom';
 import { setUserLocal } from '../../Utils/Common';
+import axios from 'axios';
 
 import './Login.css';
 
@@ -10,6 +10,8 @@ const Login = (props) => {
   const [password, setPassword] = useInput('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const history = useHistory();
 
   // sets values for form data
   function useInput(initialValue) {
@@ -22,7 +24,7 @@ const Login = (props) => {
     return [value, handleChange];
   }
 
-  const handleLogin = (e) => {
+  function handleLogin(e) {
     e.preventDefault();
     const data = {
       username: username,
@@ -54,7 +56,12 @@ const Login = (props) => {
         console.log(error);
         setError('Something went wrong. Please try again later.');
       });
-  };
+  }
+
+  function handleGuestLogin() {
+    props.handleGuestLogin();
+    return history.push('/');
+  }
 
   if (loading) return <div>Loading...</div>;
 
@@ -103,15 +110,20 @@ const Login = (props) => {
         </div>
       </form>
 
-      <div className='login-redirect'>Log In As Guest**</div>
+      <div className='login-redirect'>
+        <input
+          type='button'
+          value='Log In As Guest'
+          className='login-guest'
+          onClick={() => {
+            handleGuestLogin();
+          }}
+        />
+      </div>
+
       <div className='login-redirect'>
         <Link to={'/signup'} className='login-redirect-signup'>
           First Time?
-        </Link>
-      </div>
-      <div className='login-redirect'>
-        <Link to={'/'} className='login-redirect-back'>
-          Go Back
         </Link>
       </div>
     </section>

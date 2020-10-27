@@ -23,7 +23,7 @@ const Signup = (props) => {
     return [value, handleChange];
   }
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
 
     const data = {
@@ -53,7 +53,7 @@ const Signup = (props) => {
         setLoading(false);
         setErrors(error);
       });
-  };
+  }
 
   if (loading) return <div>Loading...</div>;
 
@@ -138,11 +138,6 @@ const Signup = (props) => {
       <div className='signup-redirect'>
         <Link to={'/login'} className='signup-redirect-login'>
           Already have an account?
-        </Link>
-      </div>
-      <div className='signup-redirect'>
-        <Link to={'/'} className='signup-redirect-back'>
-          Go Back
         </Link>
       </div>
     </section>

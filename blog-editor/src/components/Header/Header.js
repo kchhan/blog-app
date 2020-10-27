@@ -1,14 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import './Header.css';
 
 const Header = (props) => {
   const { isLoggedIn } = props;
 
-  const handleClick = () => {
-    return props.handleLogout();
-  };
+  const history = useHistory();
+
+  function handleClick() {
+    props.handleLogout();
+    return history.push('/login');
+  }
 
   return (
     <nav className='navbar'>
@@ -17,10 +20,13 @@ const Header = (props) => {
           KCHHAN: BLOG
         </Link>
       </div>
+
       <div className='nav-group nav-links'>
-        <Link to={'/'} className='link home'>
-          HOME
-        </Link>
+        {isLoggedIn ? (
+          <Link to={'/'} className='link home'>
+            HOME
+          </Link>
+        ) : null}
 
         {isLoggedIn ? null : (
           <Link to={'/login'} className='link log-in'>

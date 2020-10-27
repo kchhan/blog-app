@@ -9,10 +9,9 @@ const PostForm = (props) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [errors, setErrors] = useState([]);
-  const { newDraft } = props;
-  const { newPost } = props;
-  //const { isAdmin } = props;
+  const { user, newPost, newDraft } = props;
 
+  // fetches data if not a new post or new draft
   function fetchData() {
     const url = `http://localhost:5000/api/${props.type}/${props.match.params.id}/edit`;
 
@@ -28,8 +27,16 @@ const PostForm = (props) => {
       });
   }
 
-  const handleSaveDraft = () => {
+  function handleSaveDraft() {
+    if (user === 'Guest') {
+      return setErrors([{ message: 'Sorry, Guests cannot change items' }]);
+    }
+
     let url = '';
+
+    const token = getToken();
+    const data = { title, body };
+
     if (newDraft) {
       // save as new draft
       url = 'http://localhost:5000/api/drafts/new';
@@ -37,47 +44,83 @@ const PostForm = (props) => {
       // updating an existing draft
       url = `http://localhost:5000/api/drafts/${props.match.params.id}/edit`;
     }
-    const token = getToken();
-    const data = { title, body };
 
     axios
       .post(url, { token, data })
       .then((response) => {
-        console.log(response);
-        props.history.push('/');
+        if (response.message === 'Error Creating Draft') {
+          setErrors([{ message: 'There was an error when saving the draft' }]);
+        } else {
+          props.history.push('/');
+        }
       })
       .catch((err) => {
         console.log(err);
       });
-  };
+  }
 
-  const handlePostFormSubmit = () => {
-    let url = '';
-    if (newPost) {
-      url = `http://localhost:5000/api/posts/new`;
-    } else {
-      url = `http://localhost:5000/api/posts/${props.match.params.id}/edit`;
+  function handlePostFormSubmit() {
+    if (user === 'Guest') {
+      return setErrors([{ message: 'Sorry, Guests cannot change items' }]);
     }
 
+    let url = '';
+    let urlSecond = '';
+
     const token = getToken();
     const data = { title, body };
 
-    axios
-      .post(url, { token, data })
-      .then((response) => {
-        console.log(response);
-        props.history.push('/');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    // new post or edit post
+    if (newPost) {
+      url = 'http://localhost:5000/api/posts/new';
+      postSubmit();
+    } else {
+      url = `http://localhost:5000/api/posts/${props.match.params.id}/edit`;
+      postSubmit();
+      // go back to post list
+      return props.history.push('/');
+    }
 
+    if (!newDraft) {
+      // need to create new post
+      url = 'http://localhost:5000/api/posts/new';
+      // need to delete draft
+      urlSecond = `http://localhost:5000/api/drafts/${props.match.params.id}/delete`;
+
+      draftSubmit();
+    }
+
+    function postSubmit() {
+      axios
+        .post(url, { token, data })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    function draftSubmit() {
+      Promise.all([
+        axios.post(url, { token, data }),
+        axios.post(urlSecond, { token }),
+      ])
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }
+
+  // if not a new draft will set the title and body with existing data
   useEffect(() => {
     if (!newDraft) {
       fetchData();
     }
-  }, []);
+  }, [newDraft]);
 
   return (
     <section className='post-draft'>
@@ -113,7 +156,7 @@ const PostForm = (props) => {
           />
         </div>
 
-        <div>
+        <div className='post-form-errors'>
           {errors ? (
             <ul>
               {errors.map((error, index) => {
