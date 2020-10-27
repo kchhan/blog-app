@@ -10,10 +10,13 @@ const PostsList = () => {
 
   const history = useHistory();
 
-  const fetchData = () => {
+  function fetchData() {
+    const postUrl = 'http://localhost:5000/api/posts';
+    const draftUrl = 'http://localhost:5000/api/drafts';
+
     // fetch posts
     axios
-      .get('http://localhost:5000/api/posts')
+      .get(postUrl)
       .then((response) => {
         // newest blog posts go on top
         setPosts(response.data.reverse());
@@ -24,22 +27,31 @@ const PostsList = () => {
 
     // fetch drafts
     axios
-      .get('http://localhost:5000/api/drafts')
+      .get(draftUrl)
       .then((response) => {
         setDrafts(response.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  };
+  }
 
-  const handleEditDraft = () => {};
+  function handleEdit(type, id) {
+    history.push(`/${type}/${id}/edit`);
+  }
 
-  const handleDeleteDraft = () => {};
+  function handleDelete(type, id) {
+    const url = `http://localhost:5000/api/${type}/${id}/delete`;
 
-  const handleEditPost = () => {};
-
-  const handleDeletePost = () => {};
+    axios
+      .post(url)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   useEffect(() => {
     fetchData();
@@ -63,13 +75,17 @@ const PostsList = () => {
                 <div>
                   <input
                     type='button'
-                    onClick={handleEditDraft}
+                    onClick={() => {
+                      handleEdit('drafts', draft._id);
+                    }}
                     value='Edit'
                     className=''
                   />
                   <input
                     type='button'
-                    onClick={handleDeleteDraft}
+                    onClick={() => {
+                      handleDelete('drafts', draft._id);
+                    }}
                     value='Delete'
                     className=''
                   />
@@ -85,27 +101,35 @@ const PostsList = () => {
       <div>
         <h2 className='post-list-title'>Posts</h2>
         <ul>
-          {posts.map((post) => (
-            <li key={post._id} className='post-list-card'>
-              <Link to={`/posts/${post._id}`} className='post-list-link'>
-                {post.title}
-              </Link>
-              <div>
-              <input
+          {posts ? (
+            posts.map((post) => (
+              <li key={post._id} className='post-list-card'>
+                <Link to={`/posts/${post._id}`} className='post-list-link'>
+                  {post.title}
+                </Link>
+                <div>
+                  <input
                     type='button'
-                    onClick={handleEditPost}
+                    onClick={() => {
+                      handleEdit('posts', post._id);
+                    }}
                     value='Edit'
                     className=''
                   />
                   <input
                     type='button'
-                    onClick={handleDeletePost}
+                    onClick={() => {
+                      handleDelete('posts', post._id);
+                    }}
                     value='Delete'
                     className=''
                   />
-              </div>
-            </li>
-          ))}
+                </div>
+              </li>
+            ))
+          ) : (
+            <p>There are no posts</p>
+          )}
         </ul>
       </div>
     </section>

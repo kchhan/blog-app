@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getToken } from '../../Utils/Common';
 import axios from 'axios';
 
 import './PostForm.css';
 
-const PostNew = (props) => {
+const PostForm = (props) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [errors, setErrors] = useState([]);
   const { newDraft } = props;
-  const { isAdmin } = props;
+  const { newPost } = props;
+  //const { isAdmin } = props;
+
+  function fetchData() {
+    const url = `http://localhost:5000/api/${props.type}/${props.match.params.id}/edit`;
+
+    axios
+      .get(url)
+      .then((response) => {
+        // set title and body
+        setTitle(response.data.title);
+        setBody(response.data.body);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   const handleSaveDraft = () => {
     let url = '';
@@ -19,27 +35,49 @@ const PostNew = (props) => {
       url = 'http://localhost:5000/api/drafts/new';
     } else {
       // updating an existing draft
-      url = `http://localhost:5000/api/drafts/${props.match.params.id}`;
+      url = `http://localhost:5000/api/drafts/${props.match.params.id}/edit`;
     }
     const token = getToken();
     const data = { title, body };
 
-    axios.post(url, { token, data }).then((response) => {
-      console.log(response);
-      props.history.push('/')
-    });
+    axios
+      .post(url, { token, data })
+      .then((response) => {
+        console.log(response);
+        props.history.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handlePostFormSubmit = () => {
-    const url = `http://localhost:5000/api/posts/new`;
+    let url = '';
+    if (newPost) {
+      url = `http://localhost:5000/api/posts/new`;
+    } else {
+      url = `http://localhost:5000/api/posts/${props.match.params.id}/edit`;
+    }
+
     const token = getToken();
     const data = { title, body };
 
-    axios.post(url, { token, data }).then((response) => {
-      console.log(response);
-      props.history.push('/')
-    });
+    axios
+      .post(url, { token, data })
+      .then((response) => {
+        console.log(response);
+        props.history.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  useEffect(() => {
+    if (!newDraft) {
+      fetchData();
+    }
+  }, []);
 
   return (
     <section className='post-draft'>
@@ -86,12 +124,17 @@ const PostNew = (props) => {
         </div>
 
         <div className='post-draft-form-group post-draft-submit-buttons'>
-          <input
-            type='button'
-            value='Save Draft'
-            onClick={handleSaveDraft}
-            className='post-draft-submit'
-          />
+          {
+            // only render 'save draft' if type is draft
+            props.type === 'drafts' ? (
+              <input
+                type='button'
+                value='Save Draft'
+                onClick={handleSaveDraft}
+                className='post-draft-submit'
+              />
+            ) : null
+          }
           <input
             type='button'
             value='Submit'
@@ -110,4 +153,4 @@ const PostNew = (props) => {
   );
 };
 
-export default PostNew;
+export default PostForm;

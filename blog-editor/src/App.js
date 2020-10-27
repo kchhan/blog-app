@@ -64,7 +64,6 @@ const App = () => {
               <PostsList
                 {...props}
                 user={user}
-                isLoggedIn={isLoggedIn}
                 isAdmin={isAdmin}
               />
             )}
@@ -75,22 +74,34 @@ const App = () => {
             render={(props) => (
               <PostForm
                 {...props}
-                user={user}
-                isLoggedIn={isLoggedIn}
+                type={'drafts'}
                 newDraft={true}
+                newPost={true}
                 isAdmin={isAdmin}
               />
             )}
           />
 
           <Route
-            path='/drafts/:id'
+            path='/drafts/:id/edit'
             render={(props) => (
               <PostForm
                 {...props}
                 user={user}
-                isLoggedIn={isLoggedIn}
+                type='drafts'
                 newDraft={false}
+                isAdmin={isAdmin}
+              />
+            )}
+          />
+
+          <Route
+            path='/posts/:id/edit'
+            render={(props) => (
+              <PostForm
+                {...props}
+                type='posts'
+                newPost={false}
                 isAdmin={isAdmin}
               />
             )}
@@ -102,7 +113,7 @@ const App = () => {
               <PostDetail
                 {...props}
                 user={user}
-                isLoggedIn={isLoggedIn}
+                type='posts'
                 isAdmin={isAdmin}
               />
             )}
