@@ -60,43 +60,38 @@ exports.post_detail_post = (req, res, next) => {
         post: req.params.id,
       });
 
-      // push comment id to post comment array
-      Post.findByIdAndUpdate(
-        req.params.id,
+      async.parallel(
         {
-          $push: {
-            comments: comment,
+          post: (callback) => {
+            Post.findByIdAndUpdate(req.params.id, {
+              $push: { comments: comment },
+            }).exec(callback);
+          },
+          users: (callback) => {
+            User.findByIdAndUpdate(authData.userId, {
+              $push: { comments: comment },
+            }).exec(callback);
           },
         },
-        (err, doc) => {
-          if (err) console.log(err);
-        }
-      );
+        (err, results) => {
+          if (err) return next(err);
 
-      // push comment id to user comment array
-      User.findByIdAndUpdate(
-        authData.userId,
-        {
-          $push: {
-            comments: comment,
-          },
-        },
-        (err, doc) => {
-          if (err) console.log(err);
-        }
-      );
-
-      // save new comment and send status back to react
-      comment.save((err) => {
-        if (err) {
-          return res.send({ error: err, status: 'error' });
-        } else {
-          return res.send({
-            message: comment.message,
-            status: 'success',
+          // save new comment and send status back to react
+          comment.save((err) => {
+            if (err) {
+              return res.send({
+                error: err,
+                message: 'Error Creating Comment',
+              });
+            } else {
+              return res.send({
+                message: comment.message,
+                status: 'Successfully Created Comment',
+              });
+            }
           });
         }
-      });
+      );
     }
   });
 };
@@ -108,9 +103,31 @@ exports.post_create_get = (req, res, next) => {
 
 // POST new blog post (editor)
 exports.post_create_post = (req, res, next) => {
-  // get info from draft form
-  // create post
-  // if exising draft get id and delete
+  // React PostForm creates a post
+  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+    if (err) {
+      // token does not match. send forbidden status
+      res.sendStatus(403);
+    } else {
+      // token matches. create post
+      const post = new Post({
+        title: req.body.data.title,
+        body: req.body.data.body,
+      });
+
+      // save new draft and send status back to react
+      post.save((err) => {
+        if (err) {
+          return res.send({ error: err, message: 'Error Creating Post' });
+        } else {
+          return res.send({
+            title: post.title,
+            status: 'Successfully Created',
+          });
+        }
+      });
+    }
+  });
 };
 
 // GET form for update blog post (editor)
@@ -147,7 +164,7 @@ exports.post_update_post = (req, res, next) => {
         },
         (err, result) => {
           if (err) console.log(err);
-          else res.send({ message: 'success' });
+          else res.send({ message: 'Successfully Updated' });
         }
       );
     }
@@ -158,4 +175,29 @@ exports.post_update_post = (req, res, next) => {
 exports.post_delete_get = (req, res, next) => {};
 
 // POST delete blog post (editor)
-exports.post_delete_post = (req, res, next) => {};
+exports.post_delete_post = (req, res, next) => {
+  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+    if (err) {
+      // token does not match. send forbidden status
+      res.sendStatus(403);
+    } else {
+      // token matches. delete post and respective comments
+      async.parallel(
+        {
+          post: (callback) => {
+            Post.findByIdAndDelete(req.params.id).exec(callback);
+          },
+          comments: (callback) => {
+            Comment.deleteMany({ post: req.params.id }).exec(callback);
+          },
+        },
+        (err, results) => {
+          if (err) return next(err);
+
+          // successful
+          return res.send({ message: 'Successfully Deleted' });
+        }
+      );
+    }
+  });
+};

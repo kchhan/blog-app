@@ -35,11 +35,11 @@ exports.draft_create_post = (req, res, next) => {
       // save new draft and send status back to react
       draft.save((err) => {
         if (err) {
-          return res.send({ error: err, status: 'error' });
+          return res.send({ error: err, message: 'Error Creating Draft' });
         } else {
           return res.send({
             title: draft.title,
-            status: 'success',
+            status: 'Successfully Created',
           });
         }
       });
@@ -80,7 +80,7 @@ exports.draft_update_post = (req, res, next) => {
         },
         (err, result) => {
           if (err) console.log(err);
-          else res.send({ message: 'success' });
+          else res.send({ message: 'Successfully Updated' });
         }
       );
     }
@@ -88,7 +88,22 @@ exports.draft_update_post = (req, res, next) => {
 };
 
 // GET request for deleting draft
-exports.draft_delete_get = (req, res, next) => {};
+exports.draft_delete_get = (req, res, next) => {
+  // Delete Draft
+};
 
 // POST delete draft
-exports.draft_delete_post = (req, res, next) => {};
+exports.draft_delete_post = (req, res, next) => {
+  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+    if (err) {
+      // token does not match. send forbidden status
+      res.sendStatus(403);
+    } else {
+      // token matches. update draft
+      Draft.findByIdAndDelete(req.params.id, (err, result) => {
+        if (err) console.log(err);
+        else res.send({ message: 'Successfully Deleted' });
+      });
+    }
+  });
+};
