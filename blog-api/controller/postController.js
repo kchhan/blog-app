@@ -116,10 +116,43 @@ exports.post_create_post = (req, res, next) => {
 // GET form for update blog post (editor)
 exports.post_update_get = (req, res, next) => {
   // get post id and send data to post from
+  Post.findById(req.params.id).exec((err, post_data) => {
+    if (err) return next(err);
+    if (post_data === null) {
+      const error = new Error('Draft not found');
+      return res.send({
+        error: error,
+      });
+    }
+    // successful
+    return res.send(post_data);
+  });
 };
 
 // POST update of blog post (editor)
-exports.post_update_post = (req, res, next) => {};
+exports.post_update_post = (req, res, next) => {
+  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+    if (err) {
+      // token does not match. send forbidden status
+      res.sendStatus(403);
+    } else {
+      // token matches. update post
+      Post.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: {
+            title: req.body.data.title,
+            body: req.body.data.body,
+          },
+        },
+        (err, result) => {
+          if (err) console.log(err);
+          else res.send({ message: 'success' });
+        }
+      );
+    }
+  });
+};
 
 // GET confirmation for deleting blog post(editor)
 exports.post_delete_get = (req, res, next) => {};

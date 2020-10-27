@@ -1,8 +1,5 @@
-const Editor = require('../models/Editor');
-const Post = require('../models/Post');
 const Draft = require('../models/Draft');
 
-const async = require('async');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -32,7 +29,7 @@ exports.draft_create_post = (req, res, next) => {
       // token matches. create draft
       const draft = new Draft({
         title: req.body.data.title,
-        body: req.body.data.title,
+        body: req.body.data.body,
       });
 
       // save new draft and send status back to react
@@ -50,12 +47,12 @@ exports.draft_create_post = (req, res, next) => {
   });
 };
 
-// GET form for update blog post
+// GET form for update blog draft
 exports.draft_update_get = (req, res, next) => {
   Draft.findById(req.params.id).exec((err, draft_data) => {
     if (err) return next(err);
     if (draft_data === null) {
-      const error = new Error('Post not found');
+      const error = new Error('Draft not found');
       return res.send({
         error: error,
       });
@@ -66,7 +63,29 @@ exports.draft_update_get = (req, res, next) => {
 };
 
 // POST update draft
-exports.draft_update_post = (req, res, next) => {};
+exports.draft_update_post = (req, res, next) => {
+  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+    if (err) {
+      // token does not match. send forbidden status
+      res.sendStatus(403);
+    } else {
+      // token matches. update draft
+      Draft.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: {
+            title: req.body.data.title,
+            body: req.body.data.body,
+          },
+        },
+        (err, result) => {
+          if (err) console.log(err);
+          else res.send({ message: 'success' });
+        }
+      );
+    }
+  });
+};
 
 // GET request for deleting draft
 exports.draft_delete_get = (req, res, next) => {};
