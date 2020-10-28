@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_ROOT } from '../../api-config'
 import axios from 'axios';
 import moment from 'moment';
 
@@ -10,7 +11,7 @@ const PostDetail = (props) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const url = `http://localhost:5000/api/posts/${props.match.params.id}`;
+  const url = `${API_ROOT}/api/posts/${props.match.params.id}`;
 
   const fetchData = () => {
     setLoading(true);

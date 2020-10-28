@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { getToken } from '../../Utils/Common';
+import { API_ROOT } from '../../api-config';
 import axios from 'axios';
 
 import './PostList.css';
@@ -15,8 +16,8 @@ const PostsList = (props) => {
   const history = useHistory();
 
   function fetchData() {
-    const postUrl = 'http://localhost:5000/api/posts';
-    const draftUrl = 'http://localhost:5000/api/drafts';
+    const postUrl = `${API_ROOT}/api/posts`;
+    const draftUrl = `${API_ROOT}/api/drafts`;
 
     Promise.all([
       // fetch posts
@@ -37,7 +38,7 @@ const PostsList = (props) => {
       return setErrors([{ message: 'Sorry, Guests cannot change items' }]);
     }
 
-    const url = `http://localhost:5000/api/${type}/${id}/delete`;
+    const url = `${API_ROOT}/api/${type}/${id}/delete`;
     const token = getToken();
 
     axios
@@ -82,11 +83,11 @@ const PostsList = (props) => {
           onClick={handleClick}
           className='post-list-button post-list-new'
         >
-          New Post
+          New Post/Draft
         </button>
       </div>
 
-      <div className="post-list-errors">
+      <div className='post-list-errors'>
         {errors ? (
           <ul>
             {errors.map((error, index) => {
@@ -97,7 +98,7 @@ const PostsList = (props) => {
       </div>
 
       <div className='list-group'>
-        <h2 className='post-list-title'>Drafts</h2>
+        <h2 className='post-list-title'>Drafts:</h2>
 
         <ul>
           {drafts.length > 0 ? (
@@ -105,22 +106,22 @@ const PostsList = (props) => {
               <li key={draft._id} className='post-list-card'>
                 <p className='post-list-link'>{draft.title}</p>
                 <div className='post-list-button-group'>
-                  <input
-                    type='button'
+                  <button
                     onClick={() => {
                       handleEdit('drafts', draft._id);
                     }}
-                    value='Edit'
                     className='post-list-button post-list-edit'
-                  />
-                  <input
-                    type='button'
+                  >
+                    Edit
+                  </button>
+                  <button
                     onClick={() => {
                       handleDelete('drafts', draft._id);
                     }}
-                    value='Delete'
                     className='post-list-button post-list-delete'
-                  />
+                  >
+                    Delete
+                  </button>
                 </div>
               </li>
             ))
@@ -133,7 +134,7 @@ const PostsList = (props) => {
       <hr></hr>
 
       <div className='list-group'>
-        <h2 className='post-list-title'>Posts</h2>
+        <h2 className='post-list-title'>Posts:</h2>
         <ul>
           {posts.length > 0 ? (
             posts.map((post) => (
@@ -142,22 +143,22 @@ const PostsList = (props) => {
                   {post.title}
                 </Link>
                 <div className='post-list-button-group'>
-                  <input
-                    type='button'
+                  <button
                     onClick={() => {
                       handleEdit('posts', post._id);
                     }}
-                    value='Edit'
                     className='post-list-button post-list-edit'
-                  />
-                  <input
-                    type='button'
+                  >
+                    Edit
+                  </button>
+                  <button
                     onClick={() => {
                       handleDelete('posts', post._id);
                     }}
-                    value='Delete'
                     className='post-list-button post-list-delete'
-                  />
+                  >
+                    Delete
+                  </button>
                 </div>
               </li>
             ))

@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { API_ROOT } from '../../api-config'
 import axios from 'axios';
 
 import './Signup.css';
 
 const Signup = (props) => {
-  const [username, setUsername] = useInput('');
-  const [password, setPassword] = useInput('');
-  const [confirmPassword, setConfirmPassword] = useInput('');
-  const [code, setCode] = useInput('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
-
-  // sets values for form data
-  function useInput(initialValue) {
-    const [value, setValue] = useState(initialValue);
-
-    const handleChange = (e) => {
-      setValue(e.target.value);
-    };
-
-    return [value, handleChange];
-  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -36,9 +26,8 @@ const Signup = (props) => {
     setLoading(true);
 
     axios
-      .post('http://localhost:5000/api/auth/admin/signup', data)
+      .post(`${API_ROOT}/api/auth/admin/signup`, data)
       .then((response) => {
-        console.log(response);
         if (response.data.success === false) {
           // failed making user
           setLoading(false);
@@ -69,7 +58,9 @@ const Signup = (props) => {
           <input
             type='text'
             value={username}
-            onChange={setUsername}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -82,7 +73,9 @@ const Signup = (props) => {
           <input
             type='password'
             value={password}
-            onChange={setPassword}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -95,7 +88,9 @@ const Signup = (props) => {
           <input
             type='password'
             value={confirmPassword}
-            onChange={setConfirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -108,7 +103,9 @@ const Signup = (props) => {
           <input
             type='text'
             value={code}
-            onChange={setCode}
+            onChange={(e) => {
+              setCode(e.target.value);
+            }}
             className='signup-input'
             required
           />

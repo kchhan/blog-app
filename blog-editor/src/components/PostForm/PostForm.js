@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { getToken } from '../../Utils/Common';
+import { API_ROOT } from '../../api-config';
 import axios from 'axios';
 
 import './PostForm.css';
@@ -11,9 +12,11 @@ const PostForm = (props) => {
   const [errors, setErrors] = useState([]);
   const { user, newPost, newDraft } = props;
 
+  const history = useHistory();
+
   // fetches data if not a new post or new draft
   function fetchData() {
-    const url = `http://localhost:5000/api/${props.type}/${props.match.params.id}/edit`;
+    const url = `${API_ROOT}/api/${props.type}/${props.match.params.id}/edit`;
 
     axios
       .get(url)
@@ -39,10 +42,10 @@ const PostForm = (props) => {
 
     if (newDraft) {
       // save as new draft
-      url = 'http://localhost:5000/api/drafts/new';
+      url = `${API_ROOT}/api/drafts/new`;
     } else {
       // updating an existing draft
-      url = `http://localhost:5000/api/drafts/${props.match.params.id}/edit`;
+      url = `${API_ROOT}/api/drafts/${props.match.params.id}/edit`;
     }
 
     axios
@@ -71,21 +74,20 @@ const PostForm = (props) => {
     const data = { title, body };
 
     // new post or edit post
-    if (newPost) {
-      url = 'http://localhost:5000/api/posts/new';
+    if (newPost === true) {
+      url = `${API_ROOT}/api/posts/new`;
       postSubmit();
     } else {
-      url = `http://localhost:5000/api/posts/${props.match.params.id}/edit`;
+      url = `${API_ROOT}/api/posts/${props.match.params.id}/edit`;
       postSubmit();
-      // go back to post list
-      return props.history.push('/');
     }
 
-    if (!newDraft) {
+    // cannot use !newDraft because undefined is falsey
+    if (newDraft === false) {
       // need to create new post
-      url = 'http://localhost:5000/api/posts/new';
+      url = `${API_ROOT}/api/posts/new`;
       // need to delete draft
-      urlSecond = `http://localhost:5000/api/drafts/${props.match.params.id}/delete`;
+      urlSecond = `${API_ROOT}/api/drafts/${props.match.params.id}/delete`;
 
       draftSubmit();
     }
@@ -94,7 +96,7 @@ const PostForm = (props) => {
       axios
         .post(url, { token, data })
         .then((response) => {
-          console.log(response);
+          history.push('/');
         })
         .catch((err) => {
           console.log(err);
@@ -107,7 +109,7 @@ const PostForm = (props) => {
         axios.post(urlSecond, { token }),
       ])
         .then((response) => {
-          console.log(response);
+          history.push('/');
         })
         .catch((err) => {
           console.log(err);

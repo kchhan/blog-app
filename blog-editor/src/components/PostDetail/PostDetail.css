@@ -18,6 +18,7 @@
 .post-body {
   margin: 20px auto;
   padding: 10px;
+  white-space: pre-wrap;
   line-height: 1.4;
 }
 

@@ -1,28 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { setUserLocal } from '../../Utils/Common';
+import { API_ROOT } from '../../api-config'
 import axios from 'axios';
 
 import './Login.css';
 
 const Login = (props) => {
-  const [username, setUsername] = useInput('');
-  const [password, setPassword] = useInput('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const history = useHistory();
-
-  // sets values for form data
-  function useInput(initialValue) {
-    const [value, setValue] = useState(initialValue);
-
-    const handleChange = (e) => {
-      setValue(e.target.value);
-    };
-
-    return [value, handleChange];
-  }
 
   function handleLogin(e) {
     e.preventDefault();
@@ -35,12 +25,11 @@ const Login = (props) => {
     setLoading(true);
 
     axios
-      .post('http://localhost:5000/api/auth/admin/login', data)
+      .post(`${API_ROOT}/api/auth/admin/login`, data)
       .then((response) => {
         setLoading(false);
-        console.log(response);
         // failed authentication
-        if (response.data === 'Wrong username or password.') {
+        if (response.data === 'Wrong username or password') {
           return setError('Sorry. Wrong username or password');
         } else {
           // sets token in local storage
@@ -77,7 +66,9 @@ const Login = (props) => {
           <input
             type='text'
             value={username}
-            onChange={setUsername}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
             className='login-input'
             required
           />
@@ -88,7 +79,9 @@ const Login = (props) => {
           <input
             type='password'
             value={password}
-            onChange={setPassword}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             className='login-input'
             required
           />
@@ -100,25 +93,25 @@ const Login = (props) => {
         </div>
 
         <div className='login-form-group'>
-          <input
-            type='button'
-            value={loading ? 'Loading...' : 'Login'}
+          <button
             onClick={handleLogin}
             className='login-input login-submit'
             disabled={loading}
-          />
+          >
+            Log In
+          </button>
         </div>
       </form>
 
       <div className='login-redirect'>
-        <input
-          type='button'
-          value='Log In As Guest'
+        <button
           className='login-guest'
           onClick={() => {
             handleGuestLogin();
           }}
-        />
+        >
+          Log In As Guest
+        </button>
       </div>
 
       <div className='login-redirect'>
