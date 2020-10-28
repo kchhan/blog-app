@@ -14,10 +14,10 @@ exports.login_get = (req, res, next) => {
 
 // POST submit login page
 exports.login_post = (req, res, next) => {
-  passport.authenticate('user-local', { session: false }, (err, user, info) => {
+  passport.authenticate('local', { session: false }, (err, user, info) => {
     if (err) return res.send(err);
 
-    if (!user) return res.send('Wrong username or password.');
+    if (!user) return res.send('Wrong username or password');
 
     req.logIn(user, (err) => {
       if (err) return next(err);
@@ -133,7 +133,7 @@ exports.admin_login_post = (req, res, next) => {
       if (err) return res.send(err);
 
       if (!user) {
-        return res.send('Wrong username or password.');
+        return res.send('Wrong username or password');
       }
 
       req.logIn(user, (err) => {

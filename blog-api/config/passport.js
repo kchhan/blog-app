@@ -16,20 +16,21 @@ function SessionConstructor(userId, userGroup, details) {
 
 module.exports = function (passport) {
   passport.use(
-    'user-local',
+    'local',
     new LocalStrategy((username, password, done) => {
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
 
-        if (!user)
+        if (!user) {
           return done(null, false, {
             message: 'Incorrect username or password',
           });
+        }
 
         bcrypt.compare(password, user.password, (err, result) => {
           if (err) return done(err);
 
-          if (result === true) {
+          if (result) {
             // return user
             return done(null, user, { message: 'Logged In successfully' });
           } else {
@@ -40,9 +41,7 @@ module.exports = function (passport) {
       });
     })
   );
-};
 
-module.exports = function (passport) {
   passport.use(
     'editor-local',
     new LocalStrategy((username, password, done) => {
@@ -110,13 +109,14 @@ passport.deserializeUser(function (sessionConstructor, done) {
 });
 
 passport.use(
-  'user-local',
+  'local',
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.SECRET,
     },
     function (jwtPayload, done) {
+      console.log('here');
       // find the user in db if needed
       return User.findOneById(jwtPayload.id)
         .then((user) => {
