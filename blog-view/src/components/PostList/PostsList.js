@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_ROOT } from '../../api-config';
 import axios from 'axios';
 
 import './PostList.css';
@@ -9,9 +10,9 @@ const PostsList = () => {
 
   const fetchData = () => {
     axios
-      .get('http://localhost:5000/api/posts')
+      .get(`${API_ROOT}/api/posts`)
       .then((res) => {
-        setData(res.data);
+        setData(res.data.reverse());
       })
       .catch((err) => {
         console.log(err);

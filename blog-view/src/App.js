@@ -2,18 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { getUser, removeUserLocal } from './Utils/Common';
 
-import './App.css';
-
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import Header from './components/Header/Header';
 import PostsList from './components/PostList/PostsList';
 import PostDetail from './components/PostDetail/PostDetail';
 
+import './App.css';
+
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
+
+  function handleLogin() {
+    setIsLoggedIn(true);
+  }
+
+  function handleLogout() {
+    removeUserLocal();
+    setIsLoggedIn(false);
+  }
 
   useEffect(() => {
     const user = getUser();
@@ -23,15 +32,6 @@ const App = () => {
     }
     return setLoading(false);
   }, []);
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    removeUserLocal();
-    setIsLoggedIn(false);
-  };
 
   if (loading) {
     return <div>Loading...</div>;

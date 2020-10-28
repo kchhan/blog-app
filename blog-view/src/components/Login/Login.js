@@ -1,42 +1,34 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { API_ROOT } from '../../api-config';
 import { setUserLocal } from '../../Utils/Common';
+import axios from 'axios';
 
 import './Login.css';
 
 const Login = (props) => {
-  const [username, setUsername] = useInput('');
-  const [password, setPassword] = useInput('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // sets values for form data
-  function useInput(initialValue) {
-    const [value, setValue] = useState(initialValue);
-
-    const handleChange = (e) => {
-      setValue(e.target.value);
-    };
-
-    return [value, handleChange];
-  }
-
-  const handleLogin = (e) => {
+  function handleLogin(e) {
     e.preventDefault();
+
     const data = {
       username: username,
       password: password,
     };
+
     setError(null);
     setLoading(true);
+
     axios
-      .post('http://localhost:5000/api/auth/login', data)
+      .post(`${API_ROOT}/api/auth/login`, data)
       .then((response) => {
         setLoading(false);
-        console.log(response);
         // failed authentication
-        if ((response.data === 'Wrong username or password')) {
+        if (response.data === 'Wrong username or password') {
           return setError('Sorry. Wrong username or password');
         } else {
           // sets token in local storage
@@ -49,11 +41,10 @@ const Login = (props) => {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response.status === 401)
-          setError(error.response.data.message);
-        else setError('Something went wrong. Please try again later.');
+        console.log(error);
+        setError('Something went wrong. Please try again later.');
       });
-  };
+  }
 
   if (loading) return <div>Loading...</div>;
 
@@ -69,7 +60,9 @@ const Login = (props) => {
           <input
             type='text'
             value={username}
-            onChange={setUsername}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
             className='login-input'
             required
           />
@@ -80,7 +73,9 @@ const Login = (props) => {
           <input
             type='password'
             value={password}
-            onChange={setPassword}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             className='login-input'
             required
           />
@@ -92,13 +87,13 @@ const Login = (props) => {
         </div>
 
         <div className='login-form-group'>
-          <input
-            type='button'
-            value={loading ? 'Loading...' : 'Login'}
+          <button
             onClick={handleLogin}
             className='login-input login-submit'
             disabled={loading}
-          />
+          >
+            Log In
+          </button>
         </div>
       </form>
 

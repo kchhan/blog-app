@@ -1,30 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { API_ROOT } from '../../api-config';
 import axios from 'axios';
 
 import './Signup.css';
 
 const Signup = (props) => {
-  const [firstName, setFirstName] = useInput('');
-  const [lastName, setLastName] = useInput('');
-  const [username, setUsername] = useInput('');
-  const [password, setPassword] = useInput('');
-  const [confirmPassword, setConfirmPassword] = useInput('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
 
-  // sets values for form data
-  function useInput(initialValue) {
-    const [value, setValue] = useState(initialValue);
-
-    const handleChange = (e) => {
-      setValue(e.target.value);
-    };
-
-    return [value, handleChange];
-  }
-
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
 
     const data = {
@@ -38,9 +28,8 @@ const Signup = (props) => {
     setLoading(true);
 
     axios
-      .post('http://localhost:5000/api/auth/signup', data)
+      .post(`${API_ROOT}/api/auth/signup`, data)
       .then((response) => {
-        console.log(response);
         if (response.data.success === false) {
           // failed making user
           setLoading(false);
@@ -55,7 +44,7 @@ const Signup = (props) => {
         setLoading(false);
         setErrors(error);
       });
-  };
+  }
 
   if (loading) return <div>Loading...</div>;
 
@@ -71,7 +60,9 @@ const Signup = (props) => {
           <input
             type='text'
             value={firstName}
-            onChange={setFirstName}
+            onChange={(e) => {
+              setFirstName(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -84,7 +75,9 @@ const Signup = (props) => {
           <input
             type='text'
             value={lastName}
-            onChange={setLastName}
+            onChange={(e) => {
+              setLastName(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -97,7 +90,9 @@ const Signup = (props) => {
           <input
             type='text'
             value={username}
-            onChange={setUsername}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -110,7 +105,9 @@ const Signup = (props) => {
           <input
             type='password'
             value={password}
-            onChange={setPassword}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -123,7 +120,9 @@ const Signup = (props) => {
           <input
             type='password'
             value={confirmPassword}
-            onChange={setConfirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
             className='signup-input'
             required
           />
@@ -139,12 +138,9 @@ const Signup = (props) => {
         </div>
 
         <div className='signup-form-group'>
-          <input
-            type='button'
-            value='Sign Up'
-            onClick={handleSubmit}
-            className='signup-input signup-submit'
-          />
+          <button onClick={handleSubmit} className='signup-input signup-submit'>
+            Sign Up
+          </button>
         </div>
       </form>
 

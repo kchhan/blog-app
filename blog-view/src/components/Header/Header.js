@@ -6,14 +6,16 @@ import './Header.css';
 const Header = (props) => {
   const { isLoggedIn } = props;
 
-  const handleClick = () => {
+  function handleClick() {
     return props.handleLogout();
-  };
+  }
 
   return (
     <nav className='navbar'>
       <div className='nav-group'>
-        <Link to={'/'} className="title">KCHHAN: BLOG</Link>
+        <Link to={'/'} className='title'>
+          KCHHAN: BLOG
+        </Link>
       </div>
       <div className='nav-group nav-links'>
         <Link to={'/'} className='link home'>
@@ -32,7 +34,11 @@ const Header = (props) => {
           </button>
         ) : null}
 
-        {isLoggedIn ? null : <Link to={'/signup'} className="link sign-up">SIGN UP</Link>}
+        {isLoggedIn ? null : (
+          <Link to={'/signup'} className='link sign-up'>
+            SIGN UP
+          </Link>
+        )}
       </div>
     </nav>
   );

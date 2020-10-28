@@ -5,11 +5,11 @@ import './CommentForm.css';
 const CommentForm = (props) => {
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
     if (!message) return;
     else return props.handleSubmit(message);
-  };
+  }
 
   return (
     <form className='comment-form'>
@@ -28,12 +28,9 @@ const CommentForm = (props) => {
       </div>
 
       <div className='form-group'>
-        <input
-          type='button'
-          value='submit'
-          onClick={handleSubmit}
-          className='comment-input comment-submit'
-        />
+        <button onClick={handleSubmit} className='comment-input comment-submit'>
+          Submit
+        </button>
       </div>
     </form>
   );
