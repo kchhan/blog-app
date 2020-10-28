@@ -2,7 +2,6 @@
   "name": "blog-view-admin",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000/",
   "dependencies": {
     "axios": "^0.21.0",
     "moment": "^2.29.1",
