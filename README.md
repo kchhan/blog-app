@@ -8,9 +8,6 @@ User's Demo Site: https://kchhan-blog-view.herokuapp.com/
 ![Screenshot](./blog-editor/public/blog-editor.png 'Screenshot')
 Screenshot of Editor's Site
 
-![Screenshot](./blog-view/public/blog-view.png 'Screenshot')
-Screenshot of User's Site
-
 ---
 
 ## Tools Used:
@@ -36,13 +33,9 @@ Screenshot of User's Site
 - Authentication and Authorization
 
   - [JSON Web Tokens](https://jwt.io/) secures transmission of information   between the server and the client through a digitally signed token
-
-  - [Passport.js](http://www.passportjs.org/) to log in with authentication using Local Strategies
-  
+  - [Passport.js](http://www.passportjs.org/) to log in with authentication using Local Strategies 
   - [Bcrypt.js](https://www.npmjs.com/package/bcryptjs) to hash passwords before storing those hashes in the database
-
 - Validation and Sanitization
-
   - [Express-Validator](https://express-validator.github.io/docs/) ensures that client inputs are valid in that they meet a set of criteria depending on its use case
 
 - REST API
