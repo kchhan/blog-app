@@ -15,10 +15,8 @@ const Header = (props) => {
 
   return (
     <nav className='navbar'>
-      <div className='nav-group'>
-        <Link to={'/'} className='title'>
+      <div className='nav-group title'>
           KCHHAN: BLOG
-        </Link>
       </div>
 
       <div className='nav-group nav-links'>

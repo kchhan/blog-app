@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { API_ROOT } from '../../api-config'
+import { API_ROOT } from '../../api-config';
 import axios from 'axios';
 
 import './Signup.css';
@@ -114,7 +114,7 @@ const Signup = (props) => {
         <div className='signup-errors'>
           {/* if there are errors they will show above sign up button */}
           <ul>
-            {errors
+            {errors.length > 0
               ? errors.map((error, index) => {
                   return <li key={index}>{error.msg}</li>;
                 })

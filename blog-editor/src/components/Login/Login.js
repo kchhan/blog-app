@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { setUserLocal } from '../../Utils/Common';
-import { API_ROOT } from '../../api-config'
+import { API_ROOT } from '../../api-config';
 import axios from 'axios';
 
 import './Login.css';
@@ -42,7 +42,6 @@ const Login = (props) => {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
         setError('Something went wrong. Please try again later.');
       });
   }
@@ -89,7 +88,7 @@ const Login = (props) => {
 
         <div className='login-errors'>
           {/* if there are errors they will show up above log in button */}
-          {error}
+          {error ? error : null}
         </div>
 
         <div className='login-form-group'>

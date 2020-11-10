@@ -88,7 +88,7 @@ const PostsList = (props) => {
       </div>
 
       <div className='post-list-errors'>
-        {errors ? (
+        {errors.length > 0 ? (
           <ul>
             {errors.map((error, index) => {
               return <li key={index}>{error.message}</li>;

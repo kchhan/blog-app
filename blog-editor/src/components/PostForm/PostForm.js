@@ -35,11 +35,9 @@ const PostForm = (props) => {
       return setErrors([{ message: 'Sorry, Guests cannot change items' }]);
     }
 
+    // axios parameters
+    // url depending on which button was clicked
     let url = '';
-
-    const token = getToken();
-    const data = { title, body };
-
     if (newDraft) {
       // save as new draft
       url = `${API_ROOT}/api/drafts/new`;
@@ -48,8 +46,15 @@ const PostForm = (props) => {
       url = `${API_ROOT}/api/drafts/${props.match.params.id}/edit`;
     }
 
+    // data from form data
+    const data = { title, body };
+
+    // token set in request header
+    const token = getToken();
+    axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+
     axios
-      .post(url, { token, data })
+      .post(url, { data })
       .then((response) => {
         if (response.message === 'Error Creating Draft') {
           setErrors([{ message: 'There was an error when saving the draft' }]);
@@ -159,7 +164,7 @@ const PostForm = (props) => {
         </div>
 
         <div className='post-form-errors'>
-          {errors ? (
+          {errors.length > 0 ? (
             <ul>
               {errors.map((error, index) => {
                 return <li key={index}>{error.message}</li>;
