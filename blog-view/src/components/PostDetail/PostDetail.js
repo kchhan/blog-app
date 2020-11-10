@@ -32,11 +32,13 @@ const PostDetail = (props) => {
   }
 
   function handleSubmit(message) {
+    // token set in request header
     const token = getToken();
+    axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+
     axios
       .post(url, {
         message,
-        token,
       })
       .then((response) => {
         // gets back response 'success' or 'failure'
