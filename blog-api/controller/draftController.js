@@ -21,7 +21,7 @@ exports.draft_create_get = (req, res, next) => {
 
 // POST save draft
 exports.draft_create_post = (req, res, next) => {
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);
@@ -64,7 +64,7 @@ exports.draft_update_get = (req, res, next) => {
 
 // POST update draft
 exports.draft_update_post = (req, res, next) => {
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);
@@ -94,7 +94,7 @@ exports.draft_delete_get = (req, res, next) => {
 
 // POST delete draft
 exports.draft_delete_post = (req, res, next) => {
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);

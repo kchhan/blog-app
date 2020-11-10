@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
-const Draft = require('../models/Draft');
 
 const async = require('async');
 const jwt = require('jsonwebtoken');
@@ -46,8 +45,7 @@ exports.post_detail_get = (req, res, next) => {
 // POST comment on blog
 exports.post_detail_post = (req, res, next) => {
   // verify token before executing post
-
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);
@@ -104,7 +102,7 @@ exports.post_create_get = (req, res, next) => {
 // POST new blog post (editor)
 exports.post_create_post = (req, res, next) => {
   // React PostForm creates a post
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);
@@ -148,7 +146,7 @@ exports.post_update_get = (req, res, next) => {
 
 // POST update of blog post (editor)
 exports.post_update_post = (req, res, next) => {
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);
@@ -176,7 +174,7 @@ exports.post_delete_get = (req, res, next) => {};
 
 // POST delete blog post (editor)
 exports.post_delete_post = (req, res, next) => {
-  jwt.verify(req.body.token, process.env.SECRET, (err, authData) => {
+  jwt.verify(req.token, process.env.SECRET, (err, authData) => {
     if (err) {
       // token does not match. send forbidden status
       res.sendStatus(403);

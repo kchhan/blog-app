@@ -14,61 +14,92 @@ function SessionConstructor(userId, userGroup, details) {
   this.details = details;
 }
 
-module.exports = function (passport) {
-  passport.use(
-    'local',
-    new LocalStrategy((username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
+passport.use(
+  'local',
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username: username }, (err, user) => {
+      if (err) return done(err);
+
+      if (!user) {
+        return done(null, false, {
+          message: 'Incorrect username or password',
+        });
+      }
+
+      bcrypt.compare(password, user.password, (err, result) => {
         if (err) return done(err);
 
-        if (!user) {
-          return done(null, false, {
-            message: 'Incorrect username or password',
-          });
+        if (result) {
+          // return user
+          return done(null, user, { message: 'Logged In successfully' });
+        } else {
+          // no user found
+          return done(null, false, { message: 'Incorrect password' });
         }
-
-        bcrypt.compare(password, user.password, (err, result) => {
-          if (err) return done(err);
-
-          if (result) {
-            // return user
-            return done(null, user, { message: 'Logged In successfully' });
-          } else {
-            // no user found
-            return done(null, false, { message: 'Incorrect password' });
-          }
-        });
       });
-    })
-  );
+    });
+  })
+);
 
-  passport.use(
-    'editor-local',
-    new LocalStrategy((username, password, done) => {
-      Editor.findOne({ username: username }, (err, editor) => {
+passport.use(
+  'editor-local',
+  new LocalStrategy((username, password, done) => {
+    Editor.findOne({ username: username }, (err, editor) => {
+      if (err) return done(err);
+
+      if (!editor) {
+        return done(null, false, {
+          message: 'Incorrect username or password',
+        });
+      }
+
+      bcrypt.compare(password, editor.password, (err, result) => {
         if (err) return done(err);
 
-        if (!editor) {
-          return done(null, false, {
-            message: 'Incorrect username or password',
-          });
+        if (result) {
+          // return editor
+          return done(null, editor, { message: 'Logged In successfully' });
+        } else {
+          // no editor found
+          return done(null, false, { message: 'Incorrect passowrd' });
         }
-
-        bcrypt.compare(password, editor.password, (err, result) => {
-          if (err) return done(err);
-
-          if (result) {
-            // return editor
-            return done(null, editor, { message: 'Logged In successfully' });
-          } else {
-            // no editor found
-            return done(null, false, { message: 'Incorrect passowrd' });
-          }
-        });
       });
-    })
-  );
+    });
+  })
+);
+
+const jwtOpts = {
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken('Authorization'),
+  secretOrKey: process.env.SECRET,
 };
+
+passport.use(
+  'jwt',
+  new JWTStrategy(jwtOpts, function (jwtPayload, done) {
+    // find the user in db if needed
+    return User.findOneById(jwtPayload.id)
+      .then((user) => {
+        return done(null, user); // user found in db in passport
+      })
+      .catch((err) => {
+        return done(err); // user not found in db
+      });
+  })
+);
+
+passport.use(
+  'editor-jwt',
+  new JWTStrategy(jwtOpts, function (jwtPayload, done) {
+    // find the editor in db if needed
+    return Editor.findOneById({ id: jwtPayload.sub })
+      .then((user) => {
+        return done(null, user); // editor found in db in passport
+      })
+      .catch((err) => {
+        return done(err); // editor not found in db
+      });
+  })
+);
 
 passport.serializeUser(function (userObject, done) {
   let userGroup = 'User';
@@ -107,44 +138,3 @@ passport.deserializeUser(function (sessionConstructor, done) {
     );
   }
 });
-
-passport.use(
-  'local',
-  new JWTStrategy(
-    {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.SECRET,
-    },
-    function (jwtPayload, done) {
-      console.log('here');
-      // find the user in db if needed
-      return User.findOneById(jwtPayload.id)
-        .then((user) => {
-          return done(null, user);
-        })
-        .catch((err) => {
-          return done(err);
-        });
-    }
-  )
-);
-
-passport.use(
-  'editor-local',
-  new JWTStrategy(
-    {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.SECRET,
-    },
-    function (jwtPayload, done) {
-      // find the editor in db if needed
-      return Editor.findOneById(jwtPayload.id)
-        .then((user) => {
-          return done(null, user);
-        })
-        .catch((err) => {
-          return done(err);
-        });
-    }
-  )
-);

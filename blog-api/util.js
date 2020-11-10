@@ -1,3 +1,4 @@
+const { nextTick } = require('async');
 const jwt = require('jsonwebtoken');
 
 // generate token and return it
@@ -7,7 +8,6 @@ const generateToken = (user) => {
 
   const u = {
     userId: user._id,
-    first_name: user.first_name,
     username: user.username,
   };
 
@@ -22,9 +22,28 @@ const getCleanUser = (user) => {
 
   return {
     userId: user.userId,
-    first_name: user.first_name,
     username: user.username,
   };
 };
 
-module.exports = { generateToken, getCleanUser };
+const verifyToken = (req, res, next) => {
+  console.log(req.headers)
+  // get auth header value
+  const bearerHeader = req.headers['authorization'];
+  // check if bearer is undefined
+  if (typeof bearerHeader !== 'undefined') {
+    // split at the space
+    const bearer = bearerHeader.split(' ');
+    // get token from array
+    const bearerToken = bearer[1];
+    // set token as req.token
+    req.token = bearerToken;
+    // next middleware
+    next();
+  } else {
+    // no or wrong token. send forbidden
+    res.sendStatus(403);
+  }
+};
+
+module.exports = { generateToken, getCleanUser, verifyToken };

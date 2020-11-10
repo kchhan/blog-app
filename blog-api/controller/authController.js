@@ -7,6 +7,8 @@ require('dotenv').config();
 const { body, check, validationResult } = require('express-validator');
 const { generateToken, getCleanUser } = require('../util');
 
+const BCRYPT_SALT_ROUNDS = 10;
+
 // GET login page
 exports.login_get = (req, res, next) => {
   // React renders a login page
@@ -89,7 +91,7 @@ exports.signup_post = [
     const lastname = last_name.charAt(0).toUpperCase() + last_name.slice(1);
 
     // encrypt password and make user
-    bcrypt.hash(password, 10, (err, hash) => {
+    bcrypt.hash(password, BCRYPT_SALT_ROUNDS, (err, hash) => {
       if (err) return next(err);
       const user = new User({
         first_name: firstname,
@@ -131,6 +133,8 @@ exports.admin_login_post = (req, res, next) => {
     { session: false },
     (err, user, info) => {
       if (err) return res.send(err);
+
+      if (info !== undefined) console.log(info);
 
       if (!user) {
         return res.send('Wrong username or password');
