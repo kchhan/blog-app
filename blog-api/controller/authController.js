@@ -198,7 +198,7 @@ exports.admin_signup_post = [
     const { username, password } = req.body;
 
     // encrypt password and make editor
-    bcrypt.hash(password, 10, (err, hash) => {
+    bcrypt.hash(password, BCRYPT_SALT_ROUNDS, (err, hash) => {
       if (err) return next(err);
       const editor = new Editor({
         username: username,
